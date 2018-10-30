@@ -1,0 +1,1 @@
+This is a project for testing the python in docker using docker-compose
