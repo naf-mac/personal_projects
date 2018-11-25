@@ -1,0 +1,57 @@
+# Exam Blue Print
+	* 130 min in lenght
+	* 60 questions (can change)
+	* multiple choice
+	* results are between 100 - 1000 with passing for 720
+	* Aim for 70%
+	* qualification is valid for 2 years
+	* scenario based questions
+
+####################
+Scope of the Exam
+	* AWS Global Infrastructure
+		* Region consist of a distinct location within a geographic area designed to provide high availability to a spefific geography.
+	* Compute
+		* Elastic Benanstalk automatically handles the deployment of your code --from capacity provisionng, load balancing, auto-scaling to application health monitoring -- based on the code you upload to it.
+	* Storage
+		* Glacier is the best choice for long term data archival.
+		* EFS is effectively a NAS in the cloud, allowing you to connect it to multiple EC2 instances at once.
+		* Storage Gateway is a hybrid storage service that enables your on-premises applications to seamlessly use S3 storage in AWS cloud.
+	* Databases
+		* Redshift use primary for data warehousing
+	* Migration
+		* DMS(Database Migration Service) can migrate your data to and from most widely used commercial and open-source databases such as Oracle, PostgreSQL, Microsoft SQL Server, Amazon Redshift, Amazon Aurora, Amazon DynamoDB, Amazon S3m MariaDB and MySQL.
+		* Snowball is a petabyte-scle data transport solution that uses secure appliances to transfer large amounts of data into and out of the AWS cloud.
+	* Networking and Content Delivery Delivery
+	* Management Tools
+		* AWS CloudTrail is a service that enables governance, compliance, operational auditing, and risk auditing of your AWS account.
+		* CloudFormation is an automated provisioning engine designed to deploy entire cloud environments via a JSON script.
+		* OpsWorks is a configuration management service that uses Chef, an automation platform that treats server configurations as code.
+		* CloudTrail logs who asked for what in the APU, while CloudWatch tracks metrics and related performace events.
+		* Trusted Advisor an online resource to help you reduce cost, increase performance, and improve security by optimizing your AWS environment, Trusted Advisor provides real time guidance to help you provision your resources following AWS best practices.
+	* Analytics
+		* EMR is specifically designed to assist you in processing large data sets.
+		* QuickSight is a fast, cloud-powered business analytics service that makes it easy to build visualizations, perform ad-hoc analysis, and quickly get business insights from your data.
+			* will aggregate your data from multiple data sources (s3, DynamoDB, RDS, etc) and provide business intelligence based on this data.
+	* Security & Identity & Compliance
+	* Application Integration
+		* SNS(Simple Notification Service) - send notification of specified events affecting your AWS environment.
+	* Desktop and App Streaming
+		* WorkSpaces is a fully managed, secure Desktop-as-a-Service(DaaS) solution that runs on AWS.
+
+####################
+Test Exams:
+I.
+Amazon kinesis is used to collect, process, and analyze real-time, streaming data.
+Elastic Transcode can conver media files to formats that can be viewed on a variety of devices.
+
+
+
+	
+####################
+
+IAM - Identity Access Management
+	- Identity Federation (including Active Directory, Facebook, LinkedIn)
+	- Multifactor Authentication
+	- Provide temporary access for users/devices and services where necessary
+	- suport PCI DSS compliance (Payment Card Industry Data Security Standard)
