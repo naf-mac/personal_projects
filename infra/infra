@@ -1,0 +1,98 @@
+# This guide is optimized for Vagrant 1.7 and above.
+# Although versions 1.6.x should behave very similarly, it is recommended
+# to upgrade instead of disabling the requirement below.
+# Vagrant.configure(2) do |winconfig|
+#   stuff
+# end
+# Vagrant.configure(2) do |winconfig|
+#   stuff
+# end
+# vagrant up --parallel
+# vagrant global-status
+Vagrant.require_version ">= 1.7.0"
+
+  # Centos:
+  # NOTE: the PORT forwarding must be STEP UP
+  # - DNS server / Jumphost                                                  # c2m4
+  # - PEMaster                                                               # c2m8
+  # - Git                                                                    # c2m1
+  # - Provisioner (Docker server / API / Ansible / Jenkins / Cloud acecess ) # c2m8
+  # - Test node                                                              # c1m1
+  # - Backup server                                                          # c2m4
+  # Ubuntu:
+  # - Kubernetes 3 nodes cluster                                             # c2m4
+  # - Test node                                                              # c1m1
+
+
+Vagrant.configure("2") do |config|
+
+  # Defaults
+  config.vm.box = "centos/7"
+  # config.vm.network "public_network"
+  config.ssh.insert_key = true
+  config.ssh.forward_agent = true
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Default resources for kube cluster / DNS / Backup  server
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 4096
+    vb.cpus = 2
+  end
+
+  # First VM should have ansible to be able to setup the account ansiadmin & nflor65
+  # * ssh passwordless login for root, ansiadm and nflor65 
+
+  # The "provisioner" with docker & API enabled, ansible (control node) , jenkins , cloud prov
+  config.vm.define :provisioner do | provisioner|
+    provisioner.vm.hostname = "provisioner"
+    provisioner.vm.network "private_network", ip: "192.168.10.30", virtualbox__intnet: "intnet"
+    provisioner.vm.provision :shell, privileged: true, path: "setup_provisioner.sh"
+
+    provisioner.vm.provider :virtualbox do |pv|
+      pv.customize ["modifyvm", :id, "--cpus", 2]
+      pv.customize ["modifyvm", :id, "--memory", 8192]
+    end
+
+  end
+
+  # To use ubunto as box vagrant
+  config.vm.define :usandbox do | usandbox|
+    usandbox.vm.box = "ubuntu/trusty64"
+    usandbox.vm.hostname = "usandbox"
+    usandbox.vm.network "private_network", ip: "192.168.10.32", virtualbox__intnet: "intnet"
+   
+    usandbox.vm.provider :virtualbox do |pv|
+      pv.customize ["modifyvm", :id, "--cpus", 1]
+      pv.customize ["modifyvm", :id, "--memory", 1024]
+    end
+
+  end
+
+  config.vm.define :csandbox do | csandbox|
+    csandbox.vm.hostname = "csandbox"
+    csandbox.vm.network "private_network", ip: "192.168.10.31", virtualbox__intnet: "intnet"
+    csandbox.vm.provision :shell, privileged: true, inline: $puppet_agent_inst
+
+    csandbox.vm.provider :virtualbox do |pv|
+      pv.customize ["modifyvm", :id, "--cpus", 1]
+      pv.customize ["modifyvm", :id, "--memory", 1024]
+    end
+
+  end
+
+  # Test for shell provisioning
+  $puppet_agent_inst = <<-SHELL
+  if ! [ -x /usr/bin/apt ]; then
+    echo "Installing the puppet agent in Centos."
+    sed -isshd_config.backup 's/^PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+    service sshd reload
+  else
+    echo "Installing the puppet agent in Ubuntu."
+  fi
+  SHELL
+  
+  # This will affect all the VMs under this file so it is advisable to use this in one VM provisioning only
+  # config.vm.provision "install_docker", type: "shell", path: "install_docker.sh"
+  # config.vm.post_up_message = "Provisiong has been completed and ready to use."
+end
