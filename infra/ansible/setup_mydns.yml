@@ -1,0 +1,31 @@
+---
+
+- name: Setup Automated Lab Environment
+  hosts: mydns.mylab.com
+  tasks:
+    - name: Create group ansiadm
+      group:
+        name: ansiadm
+        gid: 1111
+        state: present
+
+    - name: Add user ansiadm
+      user:
+        name: ansiadm
+        shell: /bin/bash
+        uid: 1111
+        group: ansiadm
+
+    - name: Grant ansiadm with sudo
+      lineinfile:
+        path: /etc/sudoers
+        insertafter: '^root'
+        line: 'ansiadm     ALL=(ALL)       NOPASSWD: ALL'
+
+    - name: Set authorize key for ansiadm taken from file
+      authorized_key:
+        user: ansiadm
+        state: present
+        key: "{{ lookup('file', '/home/ansiadm/.ssh/id_rsa.pub') }}"
+
+...
