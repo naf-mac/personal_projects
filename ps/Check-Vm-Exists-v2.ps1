@@ -1,4 +1,5 @@
 param($Server,$User,$Password)
+# Connect-VIServer vCenter01 vCenter02
 Connect-ViServer $Server -User $User -Password $Password
 
 $vms = Get-Content "C:\Users\nflor65-ba\Desktop\ps\vmlist.txt"
